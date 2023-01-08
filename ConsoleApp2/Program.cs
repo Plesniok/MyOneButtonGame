@@ -10,7 +10,10 @@ namespace OneButtonGame
             Render renderInstance = new Render(dinosaur);
 
             dinosaur.AskPlayerForName();
-            renderInstance.RenderDisplay();
+            renderInstance.DrawView();
+            Console.WriteLine(dinosaur.playerName);
+            Console.WriteLine("YOUR POINTS: " + dinosaur.playerPoints.ToString());
+            
         }
     }
 }

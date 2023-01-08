@@ -8,8 +8,10 @@ namespace OneButtonGame
 {
     class Player
     {
-        String playerName;
+        public String playerName;
         public List<Dictionary<string, int>> playerPosition = new List<Dictionary<string, int>> ();
+        public long playerPoints = 0;
+        public string playerChar = "|"; 
         public Player()
         {
             //    this.playerName = playerName;

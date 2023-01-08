@@ -10,12 +10,12 @@ namespace OneButtonGame
     class Render
     {
         private List<List<string>> view = new List<List<string>>();
-        Player player = new Player();
-        Enemy mainEnemy = new Enemy();
-        int beginMap = 45;
-        int endMap = 49;
-
-        public Render(Player newPlayer)
+        private Player player = new Player();
+        private Enemy mainEnemy = new Enemy();
+        private int beginMap = 45;
+        private int endMap = 49; 
+        private int drawViewDelay = 20;
+    public Render(Player newPlayer)
         {
             this.player = newPlayer;
         }
@@ -42,7 +42,7 @@ namespace OneButtonGame
                 this.view.Add(bufforRow);
             }
         }
-        private async void GeneratePlayer(List<Dictionary<string, int>> playerPosition, string objectChar)
+        private async void DrawObject(List<Dictionary<string, int>> playerPosition, string objectChar)
         {
             for (int i = 0; i <playerPosition.Count; i++)
             {
@@ -53,7 +53,7 @@ namespace OneButtonGame
 
             }
         }
-        private async void RemovePlayer(List<Dictionary<string, int>>  playerPosition)
+        private async void RemoveObject(List<Dictionary<string, int>>  playerPosition)
         {
             for (int i = 0; i < playerPosition.Count; i++)
             {
@@ -90,7 +90,7 @@ namespace OneButtonGame
             for (int i = 0; i < enemyPosition.Count; i++)
             {
                 Console.WriteLine(i);
-                RemovePlayer(enemyPosition);
+                RemoveObject(enemyPosition);
                 if(enemyPosition[i]["x"] - 1 < 0)
                 {
                     enemyPosition[i]["x"] = 49;
@@ -99,17 +99,19 @@ namespace OneButtonGame
                 {
                     enemyPosition[i]["x"] = enemyPosition[i]["x"] - 1;
                 }
-                GeneratePlayer(enemyPosition, "X");
+                DrawObject(enemyPosition, "X");
             }
         }
 
-        public async void RenderDisplay()
+        public async void DrawView()
         {
             GenerateGround();
+
             ConsoleKeyInfo key = Console.ReadKey();
             bool jumpFlag = false;
             bool jumpBeginFlag = false;
             long jumpBeginTime = 0;
+
             this.mainEnemy.InitEnemy(47, 49);
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
@@ -117,8 +119,8 @@ namespace OneButtonGame
             bool endGameFlag = false;
             while (true)
             {
-                GeneratePlayer(this.player.playerPosition, "|");
-                GeneratePlayer(this.mainEnemy.enemyPosition, "X");
+                DrawObject(this.player.playerPosition, "|");
+                DrawObject(this.mainEnemy.enemyPosition, "X");
 
 
 
@@ -129,21 +131,18 @@ namespace OneButtonGame
                 for (int rowIndex = 0; rowIndex <= this.view.Count - 1; rowIndex++)
                 {
                     string rowString = "";
-                    //Console.WriteLine(this.view.Count);
+
                     for (int widthIndex = 0; widthIndex <= this.view[rowIndex].Count - 1; widthIndex++)
                     {
                         
-                        //Console.WriteLine(this.view.Count);
+
                         rowString += this.view[rowIndex][widthIndex];
                         
                     }
                     Console.WriteLine(rowString);
 
                 }
-                //ConsoleKeyInfo key = Console.ReadKey();
 
-                // Check if the key pressed was the space key
-                // Check if the key pressed was the space key
                 if (Console.KeyAvailable)
                 {
                     key = Console.ReadKey();
@@ -151,28 +150,25 @@ namespace OneButtonGame
                     {
 
                         jumpBeginTime = stopwatch.ElapsedMilliseconds;
-                        RemovePlayer(player.playerPosition);
+                        RemoveObject(player.playerPosition);
                         jumpFlag = true;
                         jumpBeginFlag = true;
 
-                        //GeneratePlayer(this.player.playerPosition);
                         key = new ConsoleKeyInfo('A', ConsoleKey.Escape, false, false, false);
-                        //break;
                     }
                 }
 
 
                 if (jumpFlag)
                 {
-                    //JumpPlayerHandler(player.playerPosition);
                     if(jumpBeginFlag)
                     {
                         for (int i = 0; i < player.playerPosition.Count; i++)
                         {
-                            RemovePlayer(player.playerPosition);
+                            RemoveObject(player.playerPosition);
 
                             player.playerPosition[i]["y"] = player.playerPosition[i]["y"] - 6;
-                            GeneratePlayer(player.playerPosition, "|");
+                            DrawObject(player.playerPosition, "|");
                         }
                         jumpBeginFlag = false;
                     }
@@ -181,9 +177,9 @@ namespace OneButtonGame
                     {
                         for (int i = 0; i < player.playerPosition.Count; i++)
                         {
-                            RemovePlayer(player.playerPosition);
+                            RemoveObject(player.playerPosition);
                             player.playerPosition[i]["y"] = player.playerPosition[i]["y"] + 6;
-                            GeneratePlayer(player.playerPosition, "|");
+                            DrawObject(player.playerPosition, "|");
                         }
                         jumpBeginTime = 0;
                         jumpFlag = false;
@@ -195,12 +191,10 @@ namespace OneButtonGame
                 {
                     endMap = endMap - 1;
                     beginMap = beginMap- 1;
-                    Console.WriteLine(beginMap);
-                    Console.WriteLine("d");
 
                     for (int i = 0; i < this.mainEnemy.enemyPosition.Count; i++)
                     {
-                        RemovePlayer(this.mainEnemy.enemyPosition);
+                        RemoveObject(this.mainEnemy.enemyPosition);
                         if (this.mainEnemy.enemyPosition[i]["x"] - 1 < 0)
                         {
                             this.mainEnemy.enemyPosition[i]["x"] = 49;
@@ -209,7 +203,7 @@ namespace OneButtonGame
                         {
                             this.mainEnemy.enemyPosition[i]["x"] = this.mainEnemy.enemyPosition[i]["x"] - 1;
                         }
-                        GeneratePlayer(this.mainEnemy.enemyPosition, "X");
+                        DrawObject(this.mainEnemy.enemyPosition, "X");
                     }
                     enemyMoveTime = stopwatch.ElapsedMilliseconds;
                 }
@@ -221,7 +215,7 @@ namespace OneButtonGame
                     {
                         if(this.player.playerPosition[i]["x"] == this.mainEnemy.enemyPosition[j]["x"] && this.player.playerPosition[i]["y"] == this.mainEnemy.enemyPosition[j]["y"])
                         {
-                            Console.WriteLine("END GAME");
+                            
                             endGameFlag = true;
                             break;
 
@@ -229,17 +223,19 @@ namespace OneButtonGame
                     }
 
                 }
+                player.playerPoints += 1;
+                Thread.Sleep(this.drawViewDelay);
+                RemoveObject(this.mainEnemy.enemyPosition);
                 
-                Thread.Sleep(20);
-                RemovePlayer(this.mainEnemy.enemyPosition);
-
-                RemovePlayer(player.playerPosition);
-                Console.Clear();
+                RemoveObject(player.playerPosition);
+                
                 if (endGameFlag)
                 {
                     break;
                 }
-                //break;
+                Console.Clear();
+                Console.WriteLine("YOUR POINTS: " + player.playerPoints.ToString());
+                
             }
         }
     }
