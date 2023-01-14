@@ -29,11 +29,8 @@ namespace OneButtonGame
             bool beginJump = true;
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
-            Console.WriteLine("JUMP");
-            Console.WriteLine(jumpFlag);
             if (jumpFlag)
             {
-                Console.WriteLine("BEGINJUMP");
                 if (beginJump)
                 {
                     for (int i = 0; i < this.playerPosition.Count; i++)

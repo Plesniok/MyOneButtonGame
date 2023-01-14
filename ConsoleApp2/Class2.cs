@@ -65,48 +65,12 @@ namespace OneButtonGame
             }
         }
         
-        private async void JumpPlayerHandler(List<Dictionary<string, int>> playerPosition)
-        {
-            for (int i = 0; i < player.playerPosition.Count; i++)
-            {
-                //Console.WriteLine(player.playerPosition[i]["y"]);
-                player.playerPosition[i]["y"] = player.playerPosition[i]["y"] - 2;
 
-                //Console.WriteLine(player.playerPosition[i]["y"]);
-            }
-
-            Thread.Sleep(5000);
-            for (int i = 0; i < player.playerPosition.Count; i++)
-            {
-                //Console.WriteLine(player.playerPosition[i]["y"]);
-                player.playerPosition[i]["y"] = player.playerPosition[i]["y"] + 2;
-
-                //Console.WriteLine(player.playerPosition[i]["y"]);
-            }
-        }
-
-        private async void moveEnemyLeft(List<Dictionary<string, int>> enemyPosition)
-        {
-            for (int i = 0; i < enemyPosition.Count; i++)
-            {
-                Console.WriteLine(i);
-                RemoveObject(enemyPosition);
-                if(enemyPosition[i]["x"] - 1 < 0)
-                {
-                    enemyPosition[i]["x"] = 49;
-                }
-                else
-                {
-                    enemyPosition[i]["x"] = enemyPosition[i]["x"] - 1;
-                }
-                DrawObject(enemyPosition, "X");
-            }
-        }
 
         public async void DrawView()
         {
             GenerateGround();
-
+            Console.WriteLine("Press spacebar to jump!");
             ConsoleKeyInfo key = Console.ReadKey();
             bool jumpFlag = false;
             bool jumpBeginFlag = false;
